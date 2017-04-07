@@ -25,7 +25,7 @@ type RedisWorker struct {
 	Opts     Options
 }
 
-func (w *RedisWorker) Start() error {
+func (w *RedisWorker) Work() error {
 	conns := []redis.Conn{}
 	for i := 0; i < w.Opts.Concurrency; i++ {
 		conn, err := redis.Dial("tcp", w.Opts.Addr)
@@ -77,13 +77,11 @@ func (w *RedisWorker) handle(conn redis.Conn) error {
 	log.Printf("Got task: %s", bytes)
 
 	sig := gotask.Signature{}
-	err = json.Unmarshal(bytes.([]byte), &sig)
-	if err != nil {
+	if err := json.Unmarshal(bytes.([]byte), &sig); err != nil {
 		return err
 	}
 
-	err = gotask.Process(w.Registry, &sig)
-	if err != nil {
+	if err := gotask.Process(w.Registry, &sig); err != nil {
 		return err
 	}
 

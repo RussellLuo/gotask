@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/RussellLuo/gotask"
+	"github.com/RussellLuo/gotask/examples/tasks"
 )
 
 type StringArray []string
@@ -48,9 +49,9 @@ func main() {
 
 	worker := NSQWorker{
 		Registry: map[string]gotask.Constructor{
-			"add":   func() gotask.Task { return &Add{} },
-			"greet": func() gotask.Task { return &Greet{} },
-			"panic": func() gotask.Task { return &Panic{} },
+			"add":   func() gotask.Task { return &tasks.Add{} },
+			"greet": func() gotask.Task { return &tasks.Greet{} },
+			"panic": func() gotask.Task { return &tasks.Panic{} },
 		},
 		Opts: Options{
 			Topic:            *topic,
@@ -61,8 +62,7 @@ func main() {
 			LookupdHTTPAddrs: lookupdHTTPAddrs,
 		},
 	}
-	err := worker.Start()
-	if err != nil {
+	if err := worker.Work(); err != nil {
 		log.Fatal(err)
 	}
 }

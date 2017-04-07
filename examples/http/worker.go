@@ -13,7 +13,7 @@ type HTTPWorker struct {
 	Addr     string
 }
 
-func (w *HTTPWorker) Start() error {
+func (w *HTTPWorker) Work() error {
 	http.HandleFunc("/", w.handle)
 	log.Printf("Listening on %s", w.Addr)
 	return http.ListenAndServe(w.Addr, nil)
@@ -27,15 +27,13 @@ func (w *HTTPWorker) handle(writer http.ResponseWriter, req *http.Request) {
 
 	decoder := json.NewDecoder(req.Body)
 	sig := gotask.Signature{}
-	err := decoder.Decode(&sig)
-	if err != nil {
+	if err := decoder.Decode(&sig); err != nil {
 		log.Printf("err: %#v", err)
 		writer.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	err = gotask.Process(w.Registry, &sig)
-	if err != nil {
+	if err := gotask.Process(w.Registry, &sig); err != nil {
 		log.Printf("err: %#v", err)
 		writer.WriteHeader(http.StatusInternalServerError)
 	}

@@ -25,7 +25,7 @@ type NSQWorker struct {
 	Opts     Options
 }
 
-func (w *NSQWorker) Start() error {
+func (w *NSQWorker) Work() error {
 	cfg := nsq.NewConfig()
 	cfg.MaxInFlight = w.Opts.MaxInFlight
 
@@ -36,13 +36,11 @@ func (w *NSQWorker) Start() error {
 
 	consumer.AddConcurrentHandlers(w, w.Opts.Concurrency)
 
-	err = consumer.ConnectToNSQDs(w.Opts.NSQDTCPAddrs)
-	if err != nil {
+	if err := consumer.ConnectToNSQDs(w.Opts.NSQDTCPAddrs); err != nil {
 		return err
 	}
 
-	err = consumer.ConnectToNSQLookupds(w.Opts.LookupdHTTPAddrs)
-	if err != nil {
+	if err := consumer.ConnectToNSQLookupds(w.Opts.LookupdHTTPAddrs); err != nil {
 		return err
 	}
 
@@ -63,16 +61,15 @@ func (w *NSQWorker) HandleMessage(m *nsq.Message) error {
 	log.Printf("Received message: %s", m.Body)
 
 	sig := gotask.Signature{}
-	err := json.Unmarshal(m.Body, &sig)
-	if err != nil {
+	if err := json.Unmarshal(m.Body, &sig); err != nil {
 		log.Printf("err: %#v", err)
 		return err
 	}
 
-	err = gotask.Process(w.Registry, &sig)
-	if err != nil {
+	if err := gotask.Process(w.Registry, &sig); err != nil {
 		log.Printf("err: %#v", err)
+		return err
 	}
 
-	return err
+	return nil
 }

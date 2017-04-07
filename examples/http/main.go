@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/RussellLuo/gotask"
+	"github.com/RussellLuo/gotask/examples/tasks"
 )
 
 func main() {
@@ -13,14 +14,13 @@ func main() {
 
 	worker := HTTPWorker{
 		Registry: map[string]gotask.Constructor{
-			"add":   func() gotask.Task { return &Add{} },
-			"greet": func() gotask.Task { return &Greet{} },
-			"panic": func() gotask.Task { return &Panic{} },
+			"add":   func() gotask.Task { return &tasks.Add{} },
+			"greet": func() gotask.Task { return &tasks.Greet{} },
+			"panic": func() gotask.Task { return &tasks.Panic{} },
 		},
 		Addr: *addr,
 	}
-	err := worker.Start()
-	if err != nil {
+	if err := worker.Work(); err != nil {
 		log.Fatal(err)
 	}
 }
