@@ -1,3 +1,3 @@
 # gotask
 
-The minimal Go library for implementing an asynchronous task queue.
+The minimal Go library for implementing an asynchronous task worker.
