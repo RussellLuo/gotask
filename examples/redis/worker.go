@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"sync"
 	"syscall"
 	"time"
 
@@ -35,16 +36,18 @@ func (w *RedisWorker) Start() error {
 		conns = append(conns, conn)
 	}
 
-	stopChan := make(chan os.Signal, 1)
-	sigChan := make(chan os.Signal, 1)
-	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
-
+	var wg sync.WaitGroup
 	for _, conn := range conns {
-		go func() {
+		wg.Add(1)
+
+		go func(conn redis.Conn) {
+			sigChan := make(chan os.Signal, 1)
+			signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
+
 			for {
 				select {
 				case <-sigChan:
-					stopChan <- syscall.SIGTERM
+					wg.Done()
 					return
 				default:
 					err := w.handle(conn)
@@ -54,10 +57,10 @@ func (w *RedisWorker) Start() error {
 					time.Sleep(w.Opts.Interval)
 				}
 			}
-		}()
+		}(conn)
 	}
 
-	<-stopChan
+	wg.Wait()
 	return nil
 }
 
