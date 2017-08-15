@@ -20,7 +20,7 @@ const (
 type Result interface{}
 
 type State struct {
-	UUID   string
+	ID     string
 	State  string
 	Result Result
 	Error  error
@@ -32,7 +32,7 @@ type Task interface {
 }
 
 type Signature struct {
-	UUID string
+	ID   string
 	Name string
 	Args map[string]interface{}
 }
@@ -66,7 +66,7 @@ func Process(registry map[string]Constructor, sig *Signature) error {
 
 	task := constructor()
 
-	state := &State{UUID: sig.UUID, State: StateReceived}
+	state := &State{ID: sig.ID, State: StateReceived}
 	if err := task.Notify(state); err != nil {
 		return err
 	}

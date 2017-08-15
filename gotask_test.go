@@ -53,26 +53,26 @@ func TestProcess(t *testing.T) {
 	}{
 		{
 			in: gotask.Signature{
-				UUID: "uuid-1", Name: "add",
+				ID: "id-1", Name: "add",
 				Args: map[string]interface{}{"x": 1, "y": 2},
 			},
 			want: WantType{
 				err: nil,
 				states: []gotask.State{
 					{
-						UUID:   "uuid-1",
+						ID:     "id-1",
 						State:  "RECEIVED",
 						Result: nil,
 						Error:  nil,
 					},
 					{
-						UUID:   "uuid-1",
+						ID:     "id-1",
 						State:  "STARTED",
 						Result: nil,
 						Error:  nil,
 					},
 					{
-						UUID:   "uuid-1",
+						ID:     "id-1",
 						State:  "SUCCESS",
 						Result: 3,
 						Error:  nil,
@@ -82,26 +82,26 @@ func TestProcess(t *testing.T) {
 		},
 		{
 			in: gotask.Signature{
-				UUID: "uuid-2", Name: "greet",
+				ID: "id-2", Name: "greet",
 				Args: map[string]interface{}{"words": "Russell"},
 			},
 			want: WantType{
 				err: nil,
 				states: []gotask.State{
 					{
-						UUID:   "uuid-2",
+						ID:     "id-2",
 						State:  "RECEIVED",
 						Result: nil,
 						Error:  nil,
 					},
 					{
-						UUID:   "uuid-2",
+						ID:     "id-2",
 						State:  "STARTED",
 						Result: nil,
 						Error:  nil,
 					},
 					{
-						UUID:   "uuid-2",
+						ID:     "id-2",
 						State:  "SUCCESS",
 						Result: "Hello, Russell",
 						Error:  nil,
@@ -111,26 +111,26 @@ func TestProcess(t *testing.T) {
 		},
 		{
 			in: gotask.Signature{
-				UUID: "uuid-3", Name: "panic",
+				ID: "id-3", Name: "panic",
 				Args: map[string]interface{}{},
 			},
 			want: WantType{
 				err: nil,
 				states: []gotask.State{
 					{
-						UUID:   "uuid-3",
+						ID:     "id-3",
 						State:  "RECEIVED",
 						Result: nil,
 						Error:  nil,
 					},
 					{
-						UUID:   "uuid-3",
+						ID:     "id-3",
 						State:  "STARTED",
 						Result: nil,
 						Error:  nil,
 					},
 					{
-						UUID:   "uuid-3",
+						ID:     "id-3",
 						State:  "FAILURE",
 						Result: nil,
 						Error:  errors.New("oops"),
@@ -140,7 +140,7 @@ func TestProcess(t *testing.T) {
 		},
 		{
 			in: gotask.Signature{
-				UUID: "uuid-4", Name: "unknown",
+				ID: "id-4", Name: "unknown",
 				Args: map[string]interface{}{},
 			},
 			want: WantType{
