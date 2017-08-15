@@ -150,8 +150,8 @@ func TestProcess(t *testing.T) {
 		},
 	}
 
-	makeRegistry := func(notify func(state *gotask.State) error) map[string]gotask.Constructor {
-		return map[string]gotask.Constructor{
+	makeRegistry := func(notify func(state *gotask.State) error) gotask.Registry {
+		return gotask.Registry{
 			"add": func() gotask.Task {
 				return &Add{Base: Base{NotifyFunc: notify}}
 			},

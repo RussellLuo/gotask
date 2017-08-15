@@ -43,3 +43,9 @@ func (p *Panic) Notify(state *gotask.State) error {
 	log.Printf("state: %#v", state)
 	return nil
 }
+
+var Registry = gotask.Registry{
+	"add":   func() gotask.Task { return &Add{} },
+	"greet": func() gotask.Task { return &Greet{} },
+	"panic": func() gotask.Task { return &Panic{} },
+}

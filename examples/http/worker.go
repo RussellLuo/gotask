@@ -9,7 +9,7 @@ import (
 )
 
 type HTTPWorker struct {
-	Registry map[string]gotask.Constructor
+	Registry gotask.Registry
 	Addr     string
 }
 

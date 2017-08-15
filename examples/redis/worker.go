@@ -22,7 +22,7 @@ type Options struct {
 }
 
 type RedisWorker struct {
-	Registry map[string]gotask.Constructor
+	Registry gotask.Registry
 	Opts     Options
 }
 

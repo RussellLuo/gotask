@@ -21,7 +21,7 @@ type Options struct {
 }
 
 type NSQWorker struct {
-	Registry map[string]gotask.Constructor
+	Registry gotask.Registry
 	Opts     Options
 }
 

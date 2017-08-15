@@ -4,7 +4,6 @@ import (
 	"flag"
 	"log"
 
-	"github.com/RussellLuo/gotask"
 	"github.com/RussellLuo/gotask/examples/tasks"
 )
 
@@ -13,12 +12,8 @@ func main() {
 	flag.Parse()
 
 	worker := HTTPWorker{
-		Registry: map[string]gotask.Constructor{
-			"add":   func() gotask.Task { return &tasks.Add{} },
-			"greet": func() gotask.Task { return &tasks.Greet{} },
-			"panic": func() gotask.Task { return &tasks.Panic{} },
-		},
-		Addr: *addr,
+		Registry: tasks.Registry,
+		Addr:     *addr,
 	}
 	if err := worker.Work(); err != nil {
 		log.Fatal(err)

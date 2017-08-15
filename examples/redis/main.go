@@ -5,7 +5,6 @@ import (
 	"log"
 	"time"
 
-	"github.com/RussellLuo/gotask"
 	"github.com/RussellLuo/gotask/examples/tasks"
 )
 
@@ -28,11 +27,7 @@ func main() {
 	}
 
 	worker := RedisWorker{
-		Registry: map[string]gotask.Constructor{
-			"add":   func() gotask.Task { return &tasks.Add{} },
-			"greet": func() gotask.Task { return &tasks.Greet{} },
-			"panic": func() gotask.Task { return &tasks.Panic{} },
-		},
+		Registry: tasks.Registry,
 		Opts: Options{
 			Addr:        *addr,
 			Queue:       *queue,

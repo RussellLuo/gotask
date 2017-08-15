@@ -37,7 +37,7 @@ type Signature struct {
 	Args map[string]interface{}
 }
 
-type Constructor func() Task
+type Registry map[string]func() Task
 
 func safelyRun(task Task) (result Result, err error) {
 	defer func() {
@@ -58,7 +58,7 @@ func safelyRun(task Task) (result Result, err error) {
 	return
 }
 
-func Process(registry map[string]Constructor, sig *Signature) error {
+func Process(registry Registry, sig *Signature) error {
 	constructor, ok := registry[sig.Name]
 	if !ok {
 		return errors.New("No task named " + sig.Name)

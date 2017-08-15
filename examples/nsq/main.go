@@ -5,7 +5,6 @@ import (
 	"log"
 	"strings"
 
-	"github.com/RussellLuo/gotask"
 	"github.com/RussellLuo/gotask/examples/tasks"
 )
 
@@ -48,11 +47,7 @@ func main() {
 	}
 
 	worker := NSQWorker{
-		Registry: map[string]gotask.Constructor{
-			"add":   func() gotask.Task { return &tasks.Add{} },
-			"greet": func() gotask.Task { return &tasks.Greet{} },
-			"panic": func() gotask.Task { return &tasks.Panic{} },
-		},
+		Registry: tasks.Registry,
 		Opts: Options{
 			Topic:            *topic,
 			Channel:          *channel,
