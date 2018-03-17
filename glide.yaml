@@ -1,3 +1,0 @@
-package: github.com/RussellLuo/gotask
-import:
-- package: github.com/mitchellh/mapstructure
