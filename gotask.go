@@ -7,18 +7,20 @@ import (
 )
 
 const (
-	// the task is received by a worker
+	// The task is received by a worker.
 	StateReceived = "RECEIVED"
-	// the task is started
+	// The task is started.
 	StateStarted = "STARTED"
-	// the task is processed successfully
+	// The task is processed successfully.
 	StateSuccess = "SUCCESS"
-	// the processing of the task fails
+	// The processing of the task fails.
 	StateFailure = "FAILURE"
 )
 
+// Result is the output of a (successful) task.
 type Result interface{}
 
+// State is the processing state of a task.
 type State struct {
 	ID     string
 	State  string
@@ -26,17 +28,20 @@ type State struct {
 	Error  error
 }
 
+// Task represents a job need to be done.
 type Task interface {
 	Run() (Result, error)
 	Notify(state *State) error
 }
 
+// Signature is the description of a task.
 type Signature struct {
 	ID   string
 	Name string
 	Args map[string]interface{}
 }
 
+// Registry is a mapping from task name to task.
 type Registry map[string]func() Task
 
 func safelyRun(task Task) (result Result, err error) {
@@ -49,7 +54,7 @@ func safelyRun(task Task) (result Result, err error) {
 			case string:
 				err = errors.New(e)
 			default:
-				err = errors.New("Running task caused a panic")
+				err = errors.New("running task caused a panic")
 			}
 		}
 	}()
@@ -58,10 +63,12 @@ func safelyRun(task Task) (result Result, err error) {
 	return
 }
 
+// Process parses out the task described by sig, and then perform the task.
+// Any error occurred in the processing will be returned immediately.
 func Process(registry Registry, sig *Signature) error {
 	constructor, ok := registry[sig.Name]
 	if !ok {
-		return errors.New("No task named " + sig.Name)
+		return errors.New("no task named " + sig.Name)
 	}
 
 	task := constructor()
@@ -71,7 +78,7 @@ func Process(registry Registry, sig *Signature) error {
 		return err
 	}
 
-	// Decode map[string]interface{} into a specific task struct
+	// Decode map[string]interface{} into a specific task struct.
 	if err := mapstructure.Decode(sig.Args, task); err != nil {
 		return err
 	}
