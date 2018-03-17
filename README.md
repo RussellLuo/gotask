@@ -4,3 +4,13 @@
 # gotask
 
 The minimal Go library for implementing an asynchronous task worker.
+
+## Installation
+
+```bash
+$ go get -u github.com/RussellLuo/gotask
+```
+
+## Examples
+
+Check out [examples](https://github.com/RussellLuo/gotask/tree/master/examples).
