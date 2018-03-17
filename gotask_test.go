@@ -144,7 +144,7 @@ func TestProcess(t *testing.T) {
 				Args: map[string]interface{}{},
 			},
 			want: WantType{
-				err:    errors.New("No task named unknown"),
+				err:    errors.New("no task named unknown"),
 				states: []gotask.State{},
 			},
 		},
@@ -165,17 +165,19 @@ func TestProcess(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		states := make([]gotask.State, 0, 3)
-		registry := makeRegistry(func(state *gotask.State) error {
-			states = append(states, *state)
-			return nil
+		t.Run("", func(t *testing.T) {
+			states := make([]gotask.State, 0, 3)
+			registry := makeRegistry(func(state *gotask.State) error {
+				states = append(states, *state)
+				return nil
+			})
+			err := gotask.Process(registry, &c.in)
+			if !reflect.DeepEqual(err, c.want.err) {
+				t.Errorf("Got (%#v) != Want (%#v)", err, c.want.err)
+			}
+			if !reflect.DeepEqual(states, c.want.states) {
+				t.Errorf("Got (%#v) != Want (%#v)", states, c.want.states)
+			}
 		})
-		err := gotask.Process(registry, &c.in)
-		if !reflect.DeepEqual(err, c.want.err) {
-			t.Errorf("Got (%#v) != Want (%#v)", err, c.want.err)
-		}
-		if !reflect.DeepEqual(states, c.want.states) {
-			t.Errorf("Got (%#v) != Want (%#v)", states, c.want.states)
-		}
 	}
 }
